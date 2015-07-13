@@ -1,19 +1,76 @@
 .js-wall-item {
+    will-change: height;
+}
+.js-wall-trigger {
+    width:100%;
+    display:block;
+    cursor:pointer;
+    background:transparent;
+    text-align:left;
+}
+.js-wall-child {
+    visibility: hidden;
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
-    margin: -1px;
+    clip: rect(0 0 0 0); 
     overflow: hidden;
-    clip: rect(0,0,0,0);
     border: 0;
+    max-height:0;
+    z-index: 2;
+    background: #262626;
+    transition: max-height 500ms ease-in;
 }
-
-.js-wall-item--on {
+.js-wall-item--on.js-is-animating .js-wall-child {
+    max-height:0;
+    transition: max-height 360ms;
+}
+.js-wall-item--on .js-wall-child {
+    visibility: visible;
     position: absolute;
     left:0;
     width:100%;
-    height:auto;
+    height: auto;
     clip:auto;
-    margin:auto;
+    max-height:1000px;
+    margin: 1.5rem auto 0 auto;
+}
+.js-wall-item--on:after {
+    content:'';
+    width: 0; 
+	height: 0; 
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	border-bottom: 15px solid #262626;
+    position: absolute;
+    margin-top:.6rem;
+    z-index:4;
+}
+.js-wall-item--on.js-is-animating:after {
+    content:'';
+}
+.js-wall-button-close,
+.js-wall-button-previous,
+.js-wall-button-next {
+    position: absolute;
+    font-size:2rem;
+    color:#fff;
+    background:transparent;
+    cursor:pointer;
+}
+.js-wall-button-close {
+    top:20px;
+    right:20px;
+}
+.js-wall-button-previous {
+    top:40%;
+    left:30px;
+}
+.js-wall-button-next {
+    top:40%;
+    right:30px;
+}
+
+*:focus {
+    box-shadow:0 0 2px 2px red
 }

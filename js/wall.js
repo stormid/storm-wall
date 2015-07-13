@@ -1,13 +1,9 @@
-/*
- * An accessible vanilla js version of Gold Interactive's The Wall
+/**
+ * @name map: StormID interactive wall
+ * @version 0.1.0: 13/7/2015
+ * @author mjbp
+ * @license MIT
  */
-
-/* 
-Calculate current index, number of items per row, height of the content to be displayed
-Add margin-bottom to all items on current row
-
-On resize recalculate current row
-*/
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     define([], factory);
@@ -19,31 +15,252 @@ On resize recalculate current row
 }(this, function() {
     'use strict';
     
+    //Request animation polyfill
+    (function() {
+        var lastTime = 0;
+        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+        }
+
+        if (!window.requestAnimationFrame)
+            window.requestAnimationFrame = function(callback, element) {
+                var currTime = new Date().getTime();
+                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+                var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+                  timeToCall);
+                lastTime = currTime + timeToCall;
+                return id;
+            };
+
+        if (!window.cancelAnimationFrame)
+            window.cancelAnimationFrame = function(id) {
+                clearTimeout(id);
+            };
+    }());
     
-    function Wall() {
-        this.element = document.querySelector('.js-wall');
-        //this.items = [].slice.call(this.element.querySelectorAll('.js-wall-item'));
-        this.items = [].slice.call(this.element.children);
-        
-        [].slice.call(this.element.querySelectorAll('.js-wall-item')).forEach(function(){
-            
-        });
+    //throttler
+    function throttle(fn, ms) {
+         var timeout,
+             last = 0;
+         return function() {
+            var a = arguments,
+                t = this,
+                now = +(new Date()),
+                exe = function() { 
+                    last = now; 
+                    fn.apply(t,a); 
+                };
+            window.clearTimeout(timeout);
+            if(now >= last + ms) {
+                exe();
+            } else {
+                timeout = window.setTimeout(exe, ms);
+            }
+        };
+     }
+    
+    //Classname and attribute property utility functions
+    var classlist = {
+        add : function(el, c) {
+            el.className = el.className + ' ' + c;
+            return this;
+        },
+        remove: function(el, c) {
+            var re = new RegExp("(^|\\s+)" + c + "(\\s+|$)");
+            el.className = el.className.replace(re, ' ');
+            return this;
+        },
+        has: function(el, c) {
+            var re = new RegExp("(^|\\s+)" + c + "(\\s+|$)");
+            return re.test(el.className);
+        },
+        toggle: function(el, c) {
+            var re = new RegExp("(^|\\s+)" + c + "(\\s+|$)");
+
+            if(classlist.has(el, c)) {
+                classlist.remove(el, c);
+            } else {
+                el.className = el.className + ' ' + c;
+            }
+            return this;
+        }
+     },
+     attributelist = {
+         add: function(el, attrs) {
+             for(var attr in attrs){
+                 el.setAttribute(attr, attrs[attr]);
+             }
+             return this;
+         },
+        toggle: function(el, attr) {
+            el.setAttribute(attr, el.getAttribute(attr) === 'true' ? false : true);
+            return this;
+        }
+     };
+    
+    //Wall item constructor
+    function WallItem(el, parent, index) {
+        this.index = index;
+        this.element = el;
+        this.trigger = el.querySelector('.js-wall-trigger');
+        this.child = el.querySelector('.js-wall-child');
     }
     
-    Wall.prototype.listeners = function(){
+    WallItem.prototype.init = function(parent) {
+        this.parent = parent;
+        this.initButtons()
+            .initListeners();
+        
+        return this;
+    };
+    
+    WallItem.prototype.initButtons = function() {
+        var templates = {
+                close: '<button class="js-wall-button-close icon-cancel" aria-label="close"></button>',
+                previous: '<button class="js-wall-button-previous icon-angle-left" aria-label="close"></button>',
+                next: '<button class="js-wall-button-next icon-angle-right" aria-label="close"></button>'
+            },
+            controls = '';
+        
+        if(!!this.child){
+            controls += templates.close;
+            if(this.index !== 0) {
+                controls += templates.previous;
+            }
+            if(this.index !== this.parent.elements.length - 1) {
+                controls += templates.next;
+            }
+            this.child.innerHTML = controls + this.child.innerHTML;
+        }
+        return this;
+    };
+    
+    WallItem.prototype.initListeners = function() {
+        if(!!this.trigger) {
+            this.trigger.addEventListener('click', this.toggle.bind(this), false);
+        }
+        if(!!this.child) {
+            this.child.querySelector('.js-wall-button-close').addEventListener('click', this.toggle.bind(this), false);
+            if(this.index !== 0) {
+                this.child.querySelector('.js-wall-button-previous').addEventListener('click', this.parent.items[this.index - 1].toggle.bind(this.parent.items[this.index - 1]), false);
+            }
+            if(this.index !== this.parent.elements.length - 1) {
+                this.child.querySelector('.js-wall-button-next').addEventListener('click', this.parent.items[this.index + 1].toggle.bind(this.parent.items[this.index + 1]), false);
+                //this.child.querySelector('.js-wall-button-next').addEventListener('click', this.toggle.bind(this.parent.items), false);
+            }
+        }
+        return this;
+    };
+    
+    WallItem.prototype.toggle = function() {
+        var animateHeight = function(){
+                this.parent.toggleRow(this.element, (+this.parent.heightClosed + this.child.offsetHeight +'px'));
+                window.requestAnimationFrame(animateHeight.bind(this));
+            };
+        
+        //check if it has any content
+        if(!this.child){ return; }
+    
+        
+        attributelist.toggle(this.trigger, 'aria-expanded');
+        attributelist.toggle(this.child, 'aria-hidden');
+        
+        if(!!this.parent.element.querySelector('.js-wall-item--on')){
+            //if it's not this one that's open, close the other then open this
+            if(this.parent.elements.indexOf(this.parent.element.querySelector('.js-wall-item--on')) !== this.index) {
+                this.parent.items[this.parent.elements.indexOf(this.parent.element.querySelector('.js-wall-item--on'))].toggle();
+                
+                setTimeout(function(){
+                    this.toggle();
+                }.bind(this), 500);
+                
+                return;
+            }
+            
+            classlist.add(this.element, 'js-is-animating');
+            
+            setTimeout(function(){
+                classlist.toggle(this.element, 'js-wall-item--on');
+                classlist.remove(this.element, 'js-is-animating');
+                this.element.style.height = this.parent.heightClosed + 'px';
+                this.parent.toggleRow(this.element, this.parent.heightClosed + 'px');
+            }.bind(this), 260);
+            
+        } else {
+            classlist.toggle(this.element, 'js-wall-item--on');
+            setTimeout(function(){
+                window.requestAnimationFrame(animateHeight.bind(this));
+            }.bind(this), 30);
+        }
+    };
+    
+    //Wall constructor
+    function Wall() {
+        var throttledResize = throttle(this.equalHeight, 60).bind(this);
+        
+        this.element = document.querySelector('.js-wall');
+        this.elements = [].slice.call(this.element.querySelectorAll('.js-wall-item'));
+        this.items = this.elements.map(function(el, index){
+            return new WallItem(el, this, index);
+        }.bind(this));
+        
         this.items.forEach(function(i){
-            this.addEventListener('click', function(){
-                console.log('this');
-            }.bind(this), false);
+            i.init(this);
+        }.bind(this));
+        
+        window.addEventListener('resize', throttledResize, false);
+        
+        this.equalHeight();
+    }
+    
+    Wall.prototype.toggleRow = function(el, h){
+        this.items.forEach(function(item){
+            if(item.element.offsetTop === el.offsetTop){
+                item.element.style.height = h;
+            }
         });
+    };
+    
+    Wall.prototype.equalHeight = function(){
+        this.heightOpen = 0;
+        this.heightClosed = 0;   
+        
+        this.items.forEach(function(item){
+            if(classlist.has(item.element, '.js-wall-item--on')) {
+                this.heightOpen = item.element.offsetHeight;
+            } else {
+                item.element.style.height = 'auto';
+                if(item.element.offsetHeight > this.heightClosed) {
+                    this.heightClosed = item.element.offsetHeight;
+                }
+            }
+        }.bind(this));
+        
+        this.items.forEach(function(item){
+            if(!classlist.has(item.element, '.js-wall-item--on')) {
+               item.element.style.height = this.heightClosed + 'px';
+            }
+        }.bind(this));
+        
+        //resize the row to the open element height
+        if(this.heightOpen > 0) {
+            this.toggleRow(this.element.querySelector('.js-wall-item--on'), this.heightOpen + 'px');
+        }
     };
     
     function init(){
         if(!document.querySelector('.js-wall')){
-            throw new Error('StormWall error: no element');
+            return;
         }
         return new Wall();
     }
+    
+    /* 
+     * Add keyboard support
+     * Previous/next buttons
+     */
     
     return {
         init: init
