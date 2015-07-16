@@ -23,8 +23,9 @@
 }
 .js-wall-item--on.js-is-animating .js-wall-child {
     max-height:0;
-    transition: max-height 360ms;
+    transition: max-height 500ms;
 }
+.js-wall-permanent .js-wall-child,
 .js-wall-item--on .js-wall-child {
     visibility: visible;
     position: absolute;
@@ -35,6 +36,18 @@
     max-height:1000px;
     margin: 1.5rem auto 0 auto;
 }
+.js-wall-permanent .js-wall-child,
+.js-wall-item--on.js-wall-permanent .js-wall-child {
+    max-height:100px;
+}
+.js-wall-permanent .js-wall-child-inner {
+    opacity:0;
+    transition:opacity 260ms linear;
+}
+.js-wall-permanent button {
+    opacity:0;
+}
+
 .js-wall-item--on:after {
     content:'';
     width: 0; 

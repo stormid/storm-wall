@@ -111,7 +111,7 @@
 	<div class="col small-12 medium-9">
             <ul class="row js-wall">
                 <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item">
-                    <button aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-1">
+                    <div role="button" tabindex="0" aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-1">
                         <img src="http://placehold.it/400x400" class="radius--50 push-half--bottom"> 
                         <div class="secondary-font delta uppercase">
                             Position/title here
@@ -119,9 +119,9 @@
                         <h3 class="primary-font alpha">
                             Name 1
                         </h3>
-                    </button>
+                    </div>
                     <div class="js-wall-child" aria-hidden="true" id="wall-1" tabindex="-1">
-                        <div class="wrap push-double--ends light-grey-2">
+                        <div class="wrap push-double--ends light-grey-2 js-wall-child-inner">
                             <div class="col small-12 large-10">
                                 <p class="giga push--bottom">
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -168,7 +168,7 @@
                     </div>
                 </li>
                 <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item">
-                    <button class="js-wall-trigger" aria-expanded="false" aria-controls="wall-2">
+                    <div role="button" tabindex="0" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-2">
                         <img src="http://placehold.it/400x400" class="radius--50 push-half--bottom"> 
                         <div class="secondary-font delta uppercase">
                             Position/title here
@@ -176,9 +176,9 @@
                         <h3 class="primary-font alpha">
                             Name 2
                         </h3>
-                    </button>
+                    </div>
                     <div class="js-wall-child" id="wall-2" aria-hidden="true">
-                        <div class="wrap push-double--ends light-grey-2">
+                        <div class="wrap push-double--ends light-grey-2 js-wall-child-inner">
                             <div class="col small-12 large-10">
                                 <p class="giga push--bottom">
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -225,7 +225,7 @@
                     </div>
                 </li>
                 <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item">
-                    <button aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-3">
+                    <div role="button" tabindex="0" aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-3">
                         <img src="http://placehold.it/400x400" class="radius--50 push-half--bottom"> 
                         <div class="secondary-font delta uppercase">
                             Position/title here
@@ -233,31 +233,215 @@
                         <h3 class="primary-font alpha">
                             Name 3
                         </h3>
-                    </button>
+                    </div>
+                    <div class="js-wall-child" aria-hidden="true" id="wall-3" tabindex="-1">
+                        <div class="wrap push-double--ends light-grey-2 js-wall-child-inner">
+                            <div class="col small-12 large-10">
+                                <p class="giga push--bottom">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </p>
+                            </div>
+                            <div class="col small-12 large-2 delta">
+                                <div class="row">
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Specialisms
+                                        </dt>
+                                        <dd>
+                                            Specialism here
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Time at Storm
+                                        </dt>
+                                        <dd>
+                                            5 years
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Services
+                                        </dt>
+                                            <dd>
+                                                User experience
+                                            </dd>
+                                            <dd>
+                                                Design
+                                            </dd>
+                                            <dd>
+                                                Development
+                                            </dd>
+                                    </dl>
+                                </div>
+                                <a href="/" class="btn btn--primary btn--small" title="Website title here">
+                                    Get in touch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
-                <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item" id="wall-4">
-                    <button aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-4">
+                <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item">
+                    <div role="button" tabindex="0" aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-4">
                         <img src="http://placehold.it/400x400" class="radius--50 push-half--bottom"> 
                         <h3 class="primary-font alpha">
                             Name 4
                         </h3>
-                    </button>
+                    </div>
+                    <div class="js-wall-child" aria-hidden="true" id="wall-4" tabindex="-1">
+                        <div class="wrap push-double--ends light-grey-2 js-wall-child-inner">
+                            <div class="col small-12 large-10">
+                                <p class="giga push--bottom">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </p>
+                            </div>
+                            <div class="col small-12 large-2 delta">
+                                <div class="row">
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Specialisms
+                                        </dt>
+                                        <dd>
+                                            Specialism here
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Time at Storm
+                                        </dt>
+                                        <dd>
+                                            5 years
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Services
+                                        </dt>
+                                            <dd>
+                                                User experience
+                                            </dd>
+                                            <dd>
+                                                Design
+                                            </dd>
+                                            <dd>
+                                                Development
+                                            </dd>
+                                    </dl>
+                                </div>
+                                <a href="/" class="btn btn--primary btn--small" title="Website title here">
+                                    Get in touch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
                 <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item">
-                    <button aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-5">
+                    <div role="button" tabindex="0" aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-5">
                         <img src="http://placehold.it/400x400" class="radius--50 push-half--bottom"> 
                         <h3 class="primary-font alpha">
                             Name 5
                         </h3>
-                    </button>
+                    </div>
+                    <div class="js-wall-child" aria-hidden="true" id="wall-5" tabindex="-1">
+                        <div class="wrap push-double--ends light-grey-2 js-wall-child-inner">
+                            <div class="col small-12 large-10">
+                                <p class="giga push--bottom">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </p>
+                            </div>
+                            <div class="col small-12 large-2 delta">
+                                <div class="row">
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Specialisms
+                                        </dt>
+                                        <dd>
+                                            Specialism here
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Time at Storm
+                                        </dt>
+                                        <dd>
+                                            5 years
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Services
+                                        </dt>
+                                            <dd>
+                                                User experience
+                                            </dd>
+                                            <dd>
+                                                Design
+                                            </dd>
+                                            <dd>
+                                                Development
+                                            </dd>
+                                    </dl>
+                                </div>
+                                <a href="/" class="btn btn--primary btn--small" title="Website title here">
+                                    Get in touch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
                 <li class="col small-6 medium-4 large-3 push--bottom bg-light-grey-1 soft js-wall-item">
-                    <button aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-6">
+                    <div role="button" tabindex="0" aria-label="Read more" class="js-wall-trigger" aria-expanded="false" aria-controls="wall-6">
                         <img src="http://placehold.it/400x400" class="radius--50 push-half--bottom"> 
                         <h3 class="primary-font alpha">
                             Name 5
                         </h3>
-                    </button>
+                    </div>
+                    <div class="js-wall-child" aria-hidden="true" id="wall-6" tabindex="-1">
+                        <div class="wrap push-double--ends light-grey-2 js-wall-child-inner">
+                            <div class="col small-12 large-10">
+                                <p class="giga push--bottom">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                </p>
+                            </div>
+                            <div class="col small-12 large-2 delta">
+                                <div class="row">
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Specialisms
+                                        </dt>
+                                        <dd>
+                                            Specialism here
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Time at Storm
+                                        </dt>
+                                        <dd>
+                                            5 years
+                                        </dd>
+                                    </dl>
+                                    <dl class="col small-4 medium-2 large-12 push-half--bottom">
+                                        <dt class="primary-font-bold uppercase">
+                                            Services
+                                        </dt>
+                                            <dd>
+                                                User experience
+                                            </dd>
+                                            <dd>
+                                                Design
+                                            </dd>
+                                            <dd>
+                                                Development
+                                            </dd>
+                                    </dl>
+                                </div>
+                                <a href="/" class="btn btn--primary btn--small" title="Website title here">
+                                    Get in touch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
