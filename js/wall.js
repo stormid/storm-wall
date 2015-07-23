@@ -1,6 +1,6 @@
 /**
  * @name map: StormID interactive wall
- * @version 0.1.0: 13/7/2015
+ * @version 0.2.0: 23/7/2015
  * @author mjbp
  * @license MIT
  */
@@ -15,32 +15,10 @@
 }(this, function() {
     'use strict';
     
-    //Request animation polyfill
-    (function() {
-        var lastTime = 0;
-        var vendors = ['ms', 'moz', 'webkit', 'o'];
-        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
-        }
-
-        if (!window.requestAnimationFrame)
-            window.requestAnimationFrame = function(callback, element) {
-                var currTime = new Date().getTime();
-                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
-                  timeToCall);
-                lastTime = currTime + timeToCall;
-                return id;
-            };
-
-        if (!window.cancelAnimationFrame)
-            window.cancelAnimationFrame = function(id) {
-                clearTimeout(id);
-            };
-    }());
-
-    // easing functions http://goo.gl/5HLl8
+    /* 
+     * Helpers
+     */
+    // easing function http://goo.gl/5HLl8
     Math.easeInOutQuad = function (t, b, c, d) {
         t /= d / 2;
         if (t < 1) {
@@ -48,17 +26,6 @@
         }
         t--;
         return -c / 2 * (t * (t - 2) - 1) + b;
-    };
-
-    Math.easeInCubic = function (t, b, c, d) {
-        var tc = (t /= d) * t * t;
-        return b + c * (tc);
-    };
-
-    Math.inOutQuintic = function (t, b, c, d) {
-        var ts = (t /= d) * t,
-        tc = ts * t;
-        return b + c * (6 * tc * ts + -15 * ts * ts + 10 * tc);
     };
 
     //scrollTo
@@ -78,18 +45,13 @@
           increment = 20;
         duration = (typeof (duration) === 'undefined') ? 500 : duration;
         var animateScroll = function () {
-            // increment the time
             currentTime += increment;
-            // find the value with the quadratic in-out easing function
             var val = Math.easeInOutQuad(currentTime, start, change, duration);
-            // move the document.body
             move(val);
-            // do the animation unless its over
             if (currentTime < duration) {
                 window.requestAnimationFrame(animateScroll);
             } else {
                 if (callback && typeof (callback) === 'function') {
-                    // the animation is done so lets callback
                     callback();
                 }
             }
@@ -118,10 +80,17 @@
         };
      }
     
-    //Classname and attribute property utility functions
+    function inView(element, view) {
+        var box = element.getBoundingClientRect();
+        return (box.right >= view.l && box.bottom >= view.t && box.left <= view.r && box.top <= view.b);
+    }
+        
+    //className and attribute property utility functions
     var classlist = {
         add : function(el, c) {
-            el.className = el.className + ' ' + c;
+            if (!classlist.has(el, c)) {
+                el.className += (el.className ? ' ' : '') + c;
+            }
             return this;
         },
         remove: function(el, c) {
@@ -158,7 +127,9 @@
     },
     classNames = {
         trigger: '.js-wall-trigger',
-        child: '.js-wall-child'
+        child: '.js-wall-child',
+        panel: '.js-wall-panel',
+        open: '.js-wall--is-open'
     };
     
     //Wall item constructor
@@ -167,35 +138,12 @@
         this.element = el;
         this.trigger = el.querySelector(classNames.trigger);
         this.child = el.querySelector(classNames.child);
-        this.throttledToggle = throttle(this.toggle, 750).bind(this);
     }
     
     WallItem.prototype.init = function(parent) {
         this.parent = parent;
-        this.initButtons()
-            .initListeners();
+        this.initListeners();
         
-        return this;
-    };
-    
-    WallItem.prototype.initButtons = function() {
-        var templates = {
-                close: '<button class="js-wall-button-close icon-cancel" aria-label="close"></button>',
-                previous: '<button class="js-wall-button-previous icon-angle-left" aria-label="close"></button>',
-                next: '<button class="js-wall-button-next icon-angle-right" aria-label="close"></button>'
-            },
-            controls = '';
-        
-        if(!!this.child){
-            controls += templates.close;
-            if(this.index !== 0) {
-                controls += templates.previous;
-            }
-            if(this.index !== this.parent.elements.length - 1) {
-                controls += templates.next;
-            }
-            this.child.innerHTML = controls + this.child.innerHTML;
-        }
         return this;
     };
     
@@ -204,7 +152,7 @@
         
         if(triggerKeys.indexOf(e.keyCode) > -1) {
             e.preventDefault();
-            this.throttledToggle.call(this);
+            this.parent.throttledChange.call(this.parent, this.index);
         }
     };
     
@@ -212,90 +160,30 @@
         var self = this;
         
         if(!!this.trigger) {
-            this.trigger.addEventListener('click', this.throttledToggle.bind(this), false);
+            this.trigger.addEventListener('click', this.parent.throttledChange.bind(this.parent, this.index), false);
             this.trigger.addEventListener('keydown', function(e) {
                 self.keyFinder.call(self, e);
             }, false);
         }
-        if(!!this.child) {
-            this.child.querySelector('.js-wall-button-close').addEventListener('click', this.throttledToggle.bind(this), false);
-            if(this.index !== 0) {
-                this.child.querySelector('.js-wall-button-previous').addEventListener('click', this.parent.items[this.index - 1].throttledToggle.bind(this.parent.items[this.index - 1]), false);
-            }
-            if(this.index !== this.parent.elements.length - 1) {
-                this.child.querySelector('.js-wall-button-next').addEventListener('click', this.parent.items[this.index + 1].throttledToggle.bind(this.parent.items[this.index + 1]), false);
-            }
-        }
         return this;
-    };
-    
-    WallItem.prototype.toggle = function() {
-        var lastHeight = 0,
-            heightCounter = 0,
-            animateHeight = function(){
-                this.parent.toggleRow(this.element, (+this.parent.heightClosed + this.child.offsetHeight +'px'));
-                if (lastHeight === this.child.offsetHeight) {
-                    heightCounter++;
-                }
-                if (heightCounter < 100) {
-                    lastHeight = this.child.offsetHeight;
-                    window.requestAnimationFrame(animateHeight.bind(this));
-                }
-            };
-        //check if it has any content
-        if(!this.child){ return; }
-    
-        
-        attributelist.toggle(this.trigger, 'aria-expanded');
-        attributelist.toggle(this.child, 'aria-hidden');
-
-        if(!!this.parent.element.querySelector('.js-wall-item--on')){
-            //if it's not this one that's open, close the other then open this
-            if(this.parent.elements.indexOf(this.parent.element.querySelector('.js-wall-item--on')) !== this.index) {
-                var current = this.parent.items[this.parent.elements.indexOf(this.parent.element.querySelector('.js-wall-item--on'))];
-                current.toggle();
-                
-                //if on the same row...
-                if(current.element.offsetTop === this.element.offsetTop) {
-                    classlist.add(current.element, 'js-wall-permanent');
-                    classlist.add(this.element, 'js-wall-permanent');
-                    setTimeout(function(){
-                        classlist.remove(current.element, 'js-wall-permanent');
-                        classlist.remove(this.element, 'js-wall-permanent');
-                    }.bind(this), 760);
-                }
-                
-                setTimeout(function(){
-                    this.toggle();
-                }.bind(this), 500);
-                
-                return;
-            }
-            
-            classlist.add(this.element, 'js-is-animating');
-            
-            setTimeout(function(){
-                classlist.toggle(this.element, 'js-wall-item--on');
-                classlist.remove(this.element, 'js-is-animating');
-                this.element.style.height = this.parent.heightClosed + 'px';
-                this.parent.toggleRow(this.element, this.parent.heightClosed + 'px');
-            }.bind(this), 500);
-            
-        } else {
-            scrollTo(this.element.offsetTop + 50, 260);
-            classlist.toggle(this.element, 'js-wall-item--on');
-            setTimeout(function(){
-                window.requestAnimationFrame(animateHeight.bind(this));
-            }.bind(this), 30);
-        }
     };
     
     //Wall constructor
     function Wall() {
-        var throttledResize = throttle(this.equalHeight, 60).bind(this);
+        var throttledResize = throttle(function(){
+            this.equalHeight.call(this, function() {
+                this.setPanelTop.call(this);
+            }.bind(this));
+        }.bind(this), 60).bind(this);
         
         this.element = document.querySelector('.js-wall');
         this.elements = [].slice.call(this.element.querySelectorAll('.js-wall-item'));
+        this.openIndex = null;
+        this.throttledChange = throttle(this.change, 360).bind(this);
+        this.throttledPrevious = throttle(this.previous, 360).bind(this);
+        this.throttledNext = throttle(this.next, 360).bind(this);
+        
+        
         this.items = this.elements.map(function(el, index){
             return new WallItem(el, this, index);
         }.bind(this));
@@ -304,47 +192,212 @@
             i.init(this);
         }.bind(this));
         
+        this.createPanel()
+            .initButtons()
+            .initListeners();
+        
         window.addEventListener('resize', throttledResize, false);
         
-        this.equalHeight();
+        setTimeout(this.equalHeight.bind(this), 10);
     }
     
-    Wall.prototype.toggleRow = function(el, h){
+    Wall.prototype.createPanel = function() {
+        var elementFactory = function(element, className, attributes){
+                var el = document.createElement(element);
+            
+                el.className = className;
+            
+                for (var k in attributes) {
+                    if(attributes.hasOwnProperty(k)){
+                        el.setAttribute(k, attributes[k]);
+                    }
+                }
+
+                return el;
+            },
+            frag = document.createDocumentFragment(),
+            panelElement = elementFactory(this.elements[0].tagName.toLowerCase(), classNames.panel.substring(1), {'aria-hidden': true});
+        this.panelInner = elementFactory('div', 'js-wall-panel-inner');
+        
+        this.panel = this.element.appendChild(panelElement);
+        
+        return this;
+    };
+    
+    Wall.prototype.initButtons = function() {
+        var templates = ['<button class="js-wall-button-close icon-cancel" aria-label="close"></button>',
+                         '<button class="js-wall-button-previous icon-angle-left" aria-label="previous"></button>',
+                         '<button class="js-wall-button-next icon-angle-right" aria-label="next"></button>'
+                         ].join('');
+    
+        this.panel.innerHTML = templates + this.panel.innerHTML;
+        return this;
+    };
+    
+    Wall.prototype.initListeners = function() {
+        this.panel.querySelector('.js-wall-button-close').addEventListener('click', this.close.bind(this), false);
+        
+        this.panel.querySelector('.js-wall-button-previous').addEventListener('click', this.throttledPrevious.bind(this), false);
+        this.panel.querySelector('.js-wall-button-next').addEventListener('click', this.throttledNext.bind(this), false);
+        
+        return this;
+    };
+    
+    Wall.prototype.getItem = function(i) {
+        return this.items[i];
+    };
+    
+    Wall.prototype.switch = function(el){
+        return this.close(function(){
+                this.open(el, 150);
+            }.bind(this), 150);
+    };
+    
+    Wall.prototype.previous = function() {
+        return this.change((this.openIndex - 1 < 0 ? this.items.length - 1 : this.openIndex - 1 ));
+    };
+    
+    Wall.prototype.next = function() {
+        return this.change((this.openIndex + 1 === this.items.length ? 0 : this.openIndex + 1 ));
+    };
+    
+    Wall.prototype.close = function(cb, end, speed){
+        var endPoint = end || 0,
+            currentTime = 0,
+            panelStart = this.panel.offsetHeight,
+            totalPanelChange = (end || 0) - panelStart,
+            rowStart = this.elements[this.openIndex].offsetHeight,
+            totalRowChange = totalPanelChange,
+            duration = speed || 16,
+            animateClosed = function() {
+                currentTime++;
+                this.panel.style.height = Math.easeInOutQuad(currentTime, panelStart, totalPanelChange, duration) + 'px';
+                this.resizeRow(this.elements[this.openIndex], Math.easeInOutQuad(currentTime, rowStart, totalRowChange, duration) + 'px');
+                if(currentTime < duration) {
+                    window.requestAnimationFrame(animateClosed.bind(this));
+                } else {
+                    if(!end) {this.panel.style.height = 'auto';}
+                    this.panelInner.removeChild(this.panelContent);
+                    classlist.remove(this.element, 'js-is-animating');
+                    classlist.remove(this.element, 'js-wall--on');
+                    this.openIndex = null;
+                    if(!!cb && typeof cb === 'function') {
+                        cb.call(this);
+                    }
+                }
+            };
+        attributelist.toggle(this.panel, 'aria-hidden');
+        classlist.add(this.element, 'js-is-animating');
+        animateClosed.call(this);
+    };
+    
+     Wall.prototype.open = function(el, start, speed){
+         this.openIndex = el.index;
+         this.setPanelTop();
+         this.panelContent = el.child.firstElementChild.cloneNode(true);
+         this.panelInner.appendChild(this.panelContent);
+         this.panel.appendChild(this.panelInner);
+         
+         var currentTime = 0,
+             panelStart = start || 0,
+             totalPanelChange = this.panel.scrollHeight - panelStart,
+             rowStart = this.closedHeight + panelStart,
+             totalRowChange = totalPanelChange,
+             duration = speed || 16,
+             animateOpen = function() {
+                 currentTime++;
+                 this.panel.style.height = Math.easeInOutQuad(currentTime, panelStart, totalPanelChange, duration) + 'px';
+                 this.resizeRow(this.elements[this.openIndex], Math.easeInOutQuad(currentTime, rowStart, totalRowChange, duration) + 'px');
+                 if(currentTime < duration) {
+                    window.requestAnimationFrame(animateOpen.bind(this));
+                 } else {
+                     this.panel.style.height = 'auto';
+                     if(!inView(this.panel, function() {
+                         return {
+                            l: 0,
+                            t: 0,
+                            b: (window.innerHeight || document.documentElement.clientHeight) - this.panel.offsetHeight,
+                            r: (window.innerWidth || document.documentElement.clientWidth)
+                        };
+                     }.call(this))) {
+                         scrollTo(this.panel.offsetTop - 120);
+                     }
+                 }
+             };
+         
+         classlist.add(this.element, 'js-wall--on');
+         attributelist.toggle(this.panel, 'aria-hidden');
+         
+         animateOpen.call(this);
+         
+         return this;
+    };
+  
+    Wall.prototype.setPanelTop = function(){
+        this.panel.style.top = this.elements[this.openIndex].offsetTop + this.elements[this.openIndex].offsetHeight - this.panel.offsetHeight + 'px';
+        
+        return this;
+    };
+    
+    Wall.prototype.change = function(i){
+        var item = this.getItem(i);
+        if(classlist.has(this.element, 'js-wall--on')) {
+            if(this.openIndex === item.index) {
+                this.close();
+                return;
+            }
+            if(this.elements[this.openIndex].offsetTop === item.element.offsetTop) {
+                this.switch(item);
+            } else {
+                this.close(function(){
+                    this.open(item);
+                }.bind(this));
+            }
+            
+        } else {
+            this.open(item);
+        }
+
+        return this;
+    };
+    
+    Wall.prototype.resizeRow = function(el, h){
         this.items.forEach(function(item){
             if(item.element.offsetTop === el.offsetTop){
                 item.element.style.height = h;
             }
         });
+        
+        return this;
     };
-    
-    Wall.prototype.equalHeight = function(){
-        this.heightOpen = 0;
-        this.heightClosed = 0;   
+                           
+    Wall.prototype.equalHeight = function(cb){
+        this.openHeight = 0;
+        this.closedHeight = 0;
         
         this.items.forEach(function(item){
-            if(classlist.has(item.element, '.js-wall-item--on')) {
-                this.heightOpen = item.element.offsetHeight;
-            } 
-            if(classlist.has(item.element, '.js-wall-permanent')) {
-                this.heightOpen = item.element.offsetHeight;
-            } 
-            else {
+            if(this.openIndex !== null && item.element.offsetTop === this.elements[this.openIndex].offsetTop) {
+                if(this.openIndex === item.index) {
+                    item.element.style.height = 'auto';
+                    this.openHeight = item.element.offsetHeight + this.panel.offsetHeight;
+                }
+            } else {
                 item.element.style.height = 'auto';
-                if(item.element.offsetHeight > this.heightClosed) {
-                    this.heightClosed = item.element.offsetHeight;
+                if(item.element.offsetHeight > this.closedHeight) {
+                    this.closedHeight = item.element.offsetHeight;
                 }
             }
         }.bind(this));
         
         this.items.forEach(function(item){
-            if(!classlist.has(item.element, '.js-wall-item--on')) {
-               item.element.style.height = this.heightClosed + 'px';
+            if(this.openIndex !== item.index) {
+               item.element.style.height = this.closedHeight + 'px';
             }
         }.bind(this));
         
-        //resize the row to the open element height
-        if(this.heightOpen > 0) {
-            this.toggleRow(this.element.querySelector('.js-wall-item--on'), this.heightOpen + 'px');
+        if(this.openHeight > 0) {
+            this.resizeRow(this.getItem(this.openIndex).element, this.openHeight + 'px');
+            if(!!cb) { cb(); }
         }
     };
     
@@ -355,11 +408,9 @@
         return new Wall();
     }
     
-    /* 
-     * Add keyboard support
-     * Previous/next buttons
-     */
-    
+    //Improve API
+    //allow programmatic toggling
+    //event dispatching when closed
     return {
         init: init
     };
