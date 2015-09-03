@@ -249,8 +249,8 @@
     
     Wall.prototype.switch = function(el){
         return this.close(function(){
-                this.open(el, 150);
-            }.bind(this), 150);
+            this.open(el, this.panel.offsetHeight);
+        }.bind(this), this.panel.offsetHeight);
     };
     
     Wall.prototype.previous = function() {
@@ -287,6 +287,7 @@
                 }
             };
         attributelist.toggle(this.panel, 'aria-hidden');
+        attributelist.toggle(this.items[this.openIndex].trigger, 'aria-expanded');
         classlist.add(this.element, 'js-is-animating');
         animateClosed.call(this);
     };
@@ -300,7 +301,7 @@
          
          var currentTime = 0,
              panelStart = start || 0,
-             totalPanelChange = this.panel.scrollHeight - panelStart,
+             totalPanelChange = this.panelInner.scrollHeight - panelStart,
              rowStart = this.closedHeight + panelStart,
              totalRowChange = totalPanelChange,
              duration = speed || 16,
@@ -327,6 +328,7 @@
          
          classlist.add(this.element, 'js-wall--on');
          attributelist.toggle(this.panel, 'aria-hidden');
+         attributelist.toggle(el.trigger, 'aria-expanded');
          
          animateOpen.call(this);
          
@@ -408,9 +410,6 @@
         return new Wall();
     }
     
-    //Improve API
-    //allow programmatic toggling
-    //event dispatching when closed
     return {
         init: init
     };
