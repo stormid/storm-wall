@@ -19,43 +19,13 @@
     max-height:0;
     z-index: 2;
     background: #262626;
-    /*transition: max-height 500ms ease-in;*/
-}/*
-.js-wall-item--on.js-is-animating .js-wall-child {
-    max-height:0;
-    transition: max-height 500ms;
 }
-.js-wall-item--on .js-wall-child {
-    visibility: visible;
-    position: absolute;
-    left:0;
-    width:100%;
-    height: auto;
-    clip:auto;
-    max-height:1000px;
-    margin: 1.5rem auto 0 auto;
-}
-.js-wall-item--on:after {
-    content:'';
-    width: 0; 
-	height: 0; 
-	border-left: 15px solid transparent;
-	border-right: 15px solid transparent;
-	border-bottom: 15px solid #262626;
-    position: absolute;
-    margin-top:.6rem;
-    z-index:4;
-}
-.js-wall-item--on.js-is-animating:after {
-    content:'';
-}*/
 .js-wall-button-close,
 .js-wall-button-previous,
 .js-wall-button-next {
     position: absolute;
     font-size:2rem;
     color:#fff;
-    background:transparent;
     cursor:pointer;
     top:100px;
     z-index:1;
@@ -94,8 +64,4 @@
 }
 .js-wall--on .js-wall-panel-inner {
     opacity:1;
-}
-
-*:focus {
-    box-shadow:0 0 2px 2px red
 }

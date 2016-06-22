@@ -1,0 +1,65 @@
+.js-wall-item {
+    will-change: height;
+}
+.js-wall-trigger {
+    width:100%;
+    display:block;
+    cursor:pointer;
+    background:transparent;
+    text-align:left;
+}
+.js-wall-child {
+    visibility: hidden;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip: rect(0 0 0 0); 
+    overflow: hidden;
+    border: 0;
+    max-height:0;
+    z-index: 2;
+    background: #262626;
+}
+.js-wall-button-close,
+.js-wall-button-previous,
+.js-wall-button-next {
+    position: absolute;
+    font-size:2rem;
+    color:#fff;
+    cursor:pointer;
+    top:100px;
+    z-index:1;
+}
+.js-wall-button-close {
+    top:20px;
+    right:20px;
+}
+.js-wall-button-previous {
+    left:30px;
+}
+.js-wall-button-next {
+    right:30px;
+}
+
+.js-wall-panel {
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    width:auto;
+    background-color:#262626;
+    clear:left;
+    overflow:hidden;
+}
+.js-wall-panel-inner {
+    opacity:0;
+    will-change:opacity;
+    transition:opacity 260ms ease;
+}
+.js-is-animating.js-wall--on .js-wall-panel-inner {
+    opacity:0;
+    transition:opacity 260ms ease;
+}
+.js-wall--on .js-wall-panel-inner {
+    opacity:1;
+}
