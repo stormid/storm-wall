@@ -1,6 +1,6 @@
 /**
- * @name storm-toggle: Toggle UI state accessibly
- * @version 0.2.0: Wed, 22 Jun 2016 15:28:11 GMT
+ * @name storm-wall: Interactive animating content wall
+ * @version 0.1.1: Fri, 15 Jul 2016 17:09:08 GMT
  * @author stormid
  * @license MIT
  */(function (root, factory) {if (typeof exports === 'object') {
@@ -185,7 +185,7 @@
                          '<button class="js-wall-button-next icon-right" aria-label="next"></button>'
         ].join('');
 
-        this.panel.innerHTML = templates + this.panel.innerHTML;
+        this.panel.innerHTML = this.panel.innerHTML + templates;
         return this;
     };
 
@@ -277,6 +277,7 @@
                     };
                     }.call(this))) {
                         scrollTo(this.panel.offsetTop - 120);
+                        el.element.parentNode.insertBefore(this.panel, el.element.nextElementSibling);
                     }
                 }
             };

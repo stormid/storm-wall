@@ -50,6 +50,11 @@
     background-color:#262626;
     clear:left;
     overflow:hidden;
+    visibility: hidden;
+}
+.js-wall--on .js-wall-panel {
+    visibility: visible;
+    z-index:1;
 }
 .js-wall-panel-inner {
     opacity:0;

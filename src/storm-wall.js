@@ -180,7 +180,7 @@
                          '<button class="js-wall-button-next icon-right" aria-label="next"></button>'
         ].join('');
 
-        this.panel.innerHTML = templates + this.panel.innerHTML;
+        this.panel.innerHTML = this.panel.innerHTML + templates;
         return this;
     };
 
@@ -247,7 +247,8 @@
         this.setPanelTop();
         this.panelContent = el.child.firstElementChild.cloneNode(true);
         this.panelInner.appendChild(this.panelContent);
-        this.panel.appendChild(this.panelInner);
+        this.panel.insertBefore(this.panelInner, this.panel.firstElementChild);
+        //this.panel.appendChild(this.panelInner);
 
         var currentTime = 0,
             panelStart = start || 0,
@@ -272,6 +273,7 @@
                     };
                     }.call(this))) {
                         scrollTo(this.panel.offsetTop - 120);
+                        el.element.parentNode.insertBefore(this.panel, el.element.nextElementSibling);
                     }
                 }
             };
