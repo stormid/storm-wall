@@ -228,6 +228,7 @@
                 } else {
                     if (!end) { this.panel.style.height = 'auto'; }
                     this.panelInner.removeChild(this.panelContent);
+			        this.panelSourceContainer.appendChild(this.panelContent);
                     this.element.classList.remove('js-is-animating');
                     this.element.classList.remove('js-wall--on');
                     this.openIndex = null;
@@ -243,10 +244,12 @@
     };
 
     Wall.prototype.open = function (el, start, speed) {
+        this.panelSourceContainer = el.child;
         this.openIndex = el.index;
         this.setPanelTop();
         this.panelContent = el.child.firstElementChild.cloneNode(true);
         this.panelInner.appendChild(this.panelContent);
+        this.panelSourceContainer.removeChild(this.panelSourceContainer.firstElementChild);
         this.panel.insertBefore(this.panelInner, this.panel.firstElementChild);
         //this.panel.appendChild(this.panelInner);
 
@@ -264,6 +267,7 @@
                     window.requestAnimationFrame(animateOpen.bind(this));
                 } else {
                     this.panel.style.height = 'auto';
+                    el.element.parentNode.insertBefore(this.panel, el.element.nextElementSibling);
                     if (!inView(this.panel, function () {
                         return {
                         l: 0,
@@ -273,7 +277,6 @@
                     };
                     }.call(this))) {
                         scrollTo(this.panel.offsetTop - 120);
-                        el.element.parentNode.insertBefore(this.panel, el.element.nextElementSibling);
                     }
                 }
             };
