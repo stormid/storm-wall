@@ -2,6 +2,10 @@
 
 Interactive animating content wall, loosely based on Google image search results animating content panels.
     
+
+
+Polyfill window.requestAnimationFrame
+
 ##Usage
 ```
 npm install storm-wall

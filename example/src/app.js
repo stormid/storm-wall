@@ -1,24 +1,8 @@
-var UTILS = {
-		attributelist: require('storm-attributelist')
-	},
-	UI = (function(w, d) {
-		'use strict';
+import Wall from './libs/storm-wall';
 
-		var Wall = require('./libs/storm-wall'),
-			init = function() {
-				Wall.init();
-			};
-
-		return {
-			init: init
-		};
-
-	})(window, document, undefined);
-
-
-global.STORM = {
-    UTILS: UTILS,
-    UI: UI
-};
-
-if('addEventListener' in window) window.addEventListener('load', STORM.UI.init, false);
+const onLoadTasks = [() => {
+	let wall = Wall.init('.js-wall');
+	console.log(wall);
+}];
+    
+if('addEventListener' in window) window.addEventListener('load', () => { onLoadTasks.forEach((fn) => fn()); });
