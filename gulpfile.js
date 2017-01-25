@@ -97,7 +97,7 @@ gulp.task('js:es5-browserify', function() {
 });
 
 gulp.task('js:es6', function() {
-    return gulp.src('src/*.js')
+    return gulp.src('src/**/*.js')
         .pipe(plumber({errorHandler: onError}))
         .pipe(header(banner, {pkg : pkg}))
 		.pipe(gulp.dest('dist/'));
