@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 0.3.0: Tue, 31 Jan 2017 18:18:38 GMT
+ * @version 0.3.0: Tue, 31 Jan 2017 18:17:04 GMT
  * @author stormid
  * @license MIT
  */

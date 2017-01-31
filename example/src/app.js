@@ -1,8 +1,11 @@
-import Wall from './libs/storm-wall';
+import Load from 'storm-load';
 
 const onLoadTasks = [() => {
-	let wall = Wall.init('.js-wall');
-	console.log(wall);
+
+	Load('./js/storm-wall.standalone.js')
+		.then(() => {
+			StormWall.init('.js-wall');
+		});
 }];
-    
+
 if('addEventListener' in window) window.addEventListener('load', () => { onLoadTasks.forEach((fn) => fn()); });

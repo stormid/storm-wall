@@ -1,4 +1,4 @@
-import throttle from 'lodash/throttle';
+import throttle from 'lodash.throttle';
 
 import scrollTo from './libs/scrollTo';
 import inView from './libs/inView';
