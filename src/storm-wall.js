@@ -212,7 +212,7 @@ const StormWall = {
 			};
 		
 		this.panel.setAttribute('aria-hidden', true);
-		this.items[this.openIndex].trigger.setAttribute('aria-hidden', false);
+		this.items[this.openIndex].trigger.setAttribute('aria-expanded', false);
 
 		this.node.classList.add('js-is-animating');
 

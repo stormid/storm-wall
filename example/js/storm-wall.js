@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 0.3.0: Tue, 31 Jan 2017 18:17:04 GMT
+ * @version 0.3.0: Wed, 01 Mar 2017 10:06:46 GMT
  * @author stormid
  * @license MIT
  */
@@ -218,7 +218,7 @@ const StormWall = {
 			};
 		
 		this.panel.setAttribute('aria-hidden', true);
-		this.items[this.openIndex].trigger.setAttribute('aria-hidden', false);
+		this.items[this.openIndex].trigger.setAttribute('aria-expanded', false);
 
 		this.node.classList.add('js-is-animating');
 
