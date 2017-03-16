@@ -14,9 +14,8 @@
   "main": "dist/storm-wall.js",
   "keywords": [
     "stormid",
-    "ui",
-    "scroll",
-    "scrollspy",
+    "component",
+    "wall",
     "UI"
   ],
   "scripts": {

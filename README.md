@@ -1,15 +1,15 @@
-#Storm Wall
+# Storm Wall
 
 [![Build Status](https://travis-ci.org/mjbp/storm-wall.svg?branch=master)](https://travis-ci.org/mjbp/storm-wall)
 [![codecov.io](http://codecov.io/github/mjbp/storm-wall/coverage.svg?branch=master)](http://codecov.io/github/mjbp/storm-wall?branch=master)
 [![npm version](https://badge.fury.io/js/storm-wall.svg)](https://badge.fury.io/js/storm-wall)
 
-Interactive animating content wall, loosely based on Google image search results animating content panels.
+Interactive animating content wall, loosely based on the Google image search results animating content panels. Use with caution, not to be used okn devices that cannot handle heavy UI repainting.
     
-##Example
+## Example
 [https://mjbp.github.io/storm-wall](https://mjbp.github.io/storm-wall)
 
-##Usage
+## Usage
 HTML
 ```
 <ul class="js-wall">
@@ -115,19 +115,113 @@ Load('/content/js/async/storm-wall.standalone.js')
         StormWall.init('.js-wall');
     });
 ```
+CSS
+Sample minimum CSS required
 
-##Tests
+```
+.js-wall-item {
+    will-change: height;
+}
+.js-wall-trigger {
+    width:100%;
+    display:block;
+    cursor:pointer;
+    background:transparent;
+    text-align:left;
+}
+.js-wall-child {
+    visibility: hidden;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip: rect(0 0 0 0); 
+    overflow: hidden;
+    border: 0;
+    max-height:0;
+    z-index: 2;
+    background: #262626;
+}
+.js-wall-close,
+.js-wall-previous,
+.js-wall-next {
+    position: absolute;
+    font-size:2rem;
+    color:#fff;
+    cursor:pointer;
+    top:100px;
+    z-index:1;
+}
+.js-wall-close {
+    top:20px;
+    right:20px;
+}
+.js-wall-previous {
+    left:30px;
+}
+.js-wall-next {
+    right:30px;
+}
+
+.js-wall-panel {
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    width:auto;
+    background-color:#262626;
+    clear:left;
+    overflow:hidden;
+    visibility: hidden;
+}
+.js-wall--is-open .js-wall-panel {
+    visibility: visible;
+    z-index:1;
+}
+.js-wall-panel-inner {
+    opacity:0;
+    will-change:opacity;
+    transition:opacity 260ms ease;
+}
+.js-is-animating.js-wall--is-open .js-wall-panel-inner {
+    opacity:0;
+    transition:opacity 260ms ease;
+}
+.js-wall--is-open .js-wall-panel-inner {
+    opacity:1;
+}
+```
+
+## Options
+```
+{
+    ready: '.js-wall--is-ready', //selector added when wall has loaded and is ready to use
+    trigger: '.js-wall-trigger', //selector for each wall item trigger button
+    item: '.js-wall-item', //selector for each wall item
+    content: '.js-wall-child', //selector for each wall item content
+    panel: '.js-wall-panel', //selector for each wall item generated content panel
+    panelInner: '.js-wall-panel-inner', //selector for each wall item generated content panel inner
+    open: '.js-wall--is-open', //className added to wall when it is open
+    animating: '.js-wall--is-animating', //className added to wall when it is animating
+    closeButton: '.js-wall-close', //panel close button selector
+    nextButton: '.js-wall-next', //selector for panel next button to move to next item in series
+    previousButton: '.js-wall-previous' //selector for panel previous button to move to previous item in series
+}
+```
+
+## Tests
 ```
 npm run test
 ```
 
-##Browser support
+## Browser support
 This is module has both es6 and es5 distributions. The es6 version should be used in a workflow that transpiles.
 
-The es5 version depends unpon Object.assign, element.classList, and Promises so all evergreen browsers are supported out of the box, ie9+ is supported with polyfills. ie8+ will work with even more polyfils for Array functions and eventListeners.
+The es5 version depends upon window.requestAnimationFrame, Object.assign, element.classList, and Promises so all evergreen browsers are supported out of the box, ie9+ is supported with polyfills. ie8+ will work with even more polyfils for Array functions and eventListeners.
 
-##Dependencies
-None
+## Dependencies
+None external.
 
-##License
+Imports lodash.throttle.
+
+## License
 MIT
