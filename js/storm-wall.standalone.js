@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 0.3.0: Wed, 01 Mar 2017 10:06:47 GMT
+ * @version 0.3.0: Thu, 16 Mar 2017 13:07:07 GMT
  * @author stormid
  * @license MIT
  */
@@ -516,6 +516,7 @@ var defaults = {
     panel: '.js-wall-panel',
     panelInner: '.js-wall-panel-inner',
     open: '.js-wall--is-open',
+    animating: '.js-wall--is-animating',
     closeButton: '.js-wall-close',
     nextButton: '.js-wall-next',
     previousButton: '.js-wall-previous'
@@ -702,18 +703,17 @@ var StormWall = {
       if (currentTime < duration) window.requestAnimationFrame(animateClosed.bind(_this7));else {
         if (!endPoint) _this7.panel.style.height = 'auto';
         _this7.panelInner.removeChild(_this7.panelContent);
+        _this7.panel.setAttribute('aria-hidden', true);
+        _this7.items[_this7.openIndex].trigger.setAttribute('aria-expanded', false);
         _this7.panelSourceContainer.appendChild(_this7.panelContent);
-        _this7.node.classList.remove('js-is-animating');
-        _this7.node.classList.remove('js-wall--on');
+        _this7.node.classList.remove(_this7.settings.classNames.animating.substr(1));
+        _this7.node.classList.remove(_this7.settings.classNames.open.substr(1));
         _this7.openIndex = false;
         typeof cb === 'function' && cb();
       }
     };
 
-    this.panel.setAttribute('aria-hidden', true);
-    this.items[this.openIndex].trigger.setAttribute('aria-expanded', false);
-
-    this.node.classList.add('js-is-animating');
+    this.node.classList.add(this.settings.classNames.animating.substr(1));
 
     animateClosed.call(this);
   },

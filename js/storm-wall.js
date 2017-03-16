@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 0.3.0: Wed, 01 Mar 2017 10:06:46 GMT
+ * @version 0.3.0: Thu, 16 Mar 2017 13:07:06 GMT
  * @author stormid
  * @license MIT
  */
@@ -19,6 +19,7 @@ const defaults = {
 		panel: '.js-wall-panel',
 		panelInner: '.js-wall-panel-inner',
 		open: '.js-wall--is-open',
+		animating: '.js-wall--is-animating',
 		closeButton: '.js-wall-close',
 		nextButton: '.js-wall-next',
 		previousButton: '.js-wall-previous'
@@ -209,18 +210,17 @@ const StormWall = {
 				else {
 					if (!endPoint) this.panel.style.height = 'auto';
 					this.panelInner.removeChild(this.panelContent);
+					this.panel.setAttribute('aria-hidden', true);
+					this.items[this.openIndex].trigger.setAttribute('aria-expanded', false);
 					this.panelSourceContainer.appendChild(this.panelContent);
-					this.node.classList.remove('js-is-animating');
-					this.node.classList.remove('js-wall--on');
+					this.node.classList.remove(this.settings.classNames.animating.substr(1));
+					this.node.classList.remove(this.settings.classNames.open.substr(1));
 					this.openIndex = false;
 					typeof cb === 'function' && cb();
 				}
 			};
 		
-		this.panel.setAttribute('aria-hidden', true);
-		this.items[this.openIndex].trigger.setAttribute('aria-expanded', false);
-
-		this.node.classList.add('js-is-animating');
+		this.node.classList.add(this.settings.classNames.animating.substr(1));
 
 		animateClosed.call(this);
 	},
