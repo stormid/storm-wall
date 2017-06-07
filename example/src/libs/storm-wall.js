@@ -44,6 +44,12 @@ const StormWall = {
 		setTimeout(this.equalHeight.bind(this), 100);
 		
 		this.node.classList.add(this.settings.classNames.ready.substr(1));
+
+		setTimeout(() => {
+			if(!!window.location.hash && !!~document.getElementById(window.location.hash.slice(1)).className.indexOf(this.settings.classNames.trigger.substr(1))) document.getElementById(window.location.hash.slice(1)).click();
+		}, 260);
+
+
 		return this;
 	},
 	initThrottled(){
@@ -168,6 +174,9 @@ const StormWall = {
 				else {
 					this.panel.style.height = 'auto';
 					this.items[i].node.parentNode.insertBefore(this.panel, this.items[i].node.nextElementSibling);
+
+					(!!window.history && !!window.history.pushState) && window.history.pushState({ URL: `#${this.items[i].trigger.getAttribute('id')}`}, '', `#${this.items[i].trigger.getAttribute('id')}`);
+
 					if (!inView(this.panel, () => {
 						return {
 							l: 0,

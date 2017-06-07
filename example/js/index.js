@@ -1,3 +1,9 @@
+/**
+ * @name storm-wall: Interactive animating content wall
+ * @version 1.0.1: Wed, 07 Jun 2017 13:33:27 GMT
+ * @author stormid
+ * @license MIT
+ */
 import throttle from 'lodash.throttle';
 
 import scrollTo from './libs/scrollTo';
@@ -175,7 +181,9 @@ const StormWall = {
 					this.panel.style.height = 'auto';
 					this.items[i].node.parentNode.insertBefore(this.panel, this.items[i].node.nextElementSibling);
 
-					(!!window.history && !!window.history.pushState) && window.history.pushState({ URL: `#${this.items[i].trigger.getAttribute('id')}`}, '', `#${this.items[i].trigger.getAttribute('id')}`);
+					console.log(this);
+
+					//(!!window.history && !!window.history.pushState) && window.history.pushState({ URL: `#${hash}`}, '', `#${hash}`);
 
 					if (!inView(this.panel, () => {
 						return {

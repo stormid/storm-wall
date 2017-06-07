@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 0.3.0: Thu, 16 Mar 2017 13:07:07 GMT
+ * @version 1.0.1: Wed, 07 Jun 2017 13:52:53 GMT
  * @author stormid
  * @license MIT
  */
@@ -535,6 +535,8 @@ var CONSTANTS = {
 
 var StormWall = {
   init: function init() {
+    var _this = this;
+
     this.openIndex = false;
 
     this.initThrottled();
@@ -547,13 +549,18 @@ var StormWall = {
     setTimeout(this.equalHeight.bind(this), 100);
 
     this.node.classList.add(this.settings.classNames.ready.substr(1));
+
+    setTimeout(function () {
+      if (!!window.location.hash && !!~document.getElementById(window.location.hash.slice(1)).className.indexOf(_this.settings.classNames.trigger.substr(1))) document.getElementById(window.location.hash.slice(1)).click();
+    }, 260);
+
     return this;
   },
   initThrottled: function initThrottled() {
-    var _this = this;
+    var _this2 = this;
 
     this.throttledResize = index(function () {
-      _this.equalHeight(_this.setPanelTop.bind(_this));
+      _this2.equalHeight(_this2.setPanelTop.bind(_this2));
     }, 60);
 
     this.throttledChange = index(this.change, 100);
@@ -561,16 +568,16 @@ var StormWall = {
     this.throttledNext = index(this.next, 100);
   },
   initTriggers: function initTriggers() {
-    var _this2 = this;
+    var _this3 = this;
 
     this.items.forEach(function (item, i) {
-      var trigger = item.node.querySelector(_this2.settings.classNames.trigger);
+      var trigger = item.node.querySelector(_this3.settings.classNames.trigger);
       if (!trigger) throw new Error(CONSTANTS.ERRORS.TRIGGER);
 
       CONSTANTS.EVENTS.forEach(function (ev) {
         trigger.addEventListener(ev, function (e) {
           if (e.keyCode && !~CONSTANTS.KEYCODES.indexOf(e.keyCode)) return;
-          _this2.throttledChange(i);
+          _this3.throttledChange(i);
           e.preventDefault();
         });
       });
@@ -595,29 +602,29 @@ var StormWall = {
     return this;
   },
   initButtons: function initButtons() {
-    var _this3 = this;
+    var _this4 = this;
 
     var buttonsTemplate = '<button class="' + this.settings.classNames.closeButton.substr(1) + '" aria-label="close">\n\t\t\t\t\t\t\t\t<svg fill="#000000" height="30" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">\n\t\t\t\t\t\t\t\t\t<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>\n\t\t\t\t\t\t\t\t\t<path d="M0 0h24v24H0z" fill="none"/>\n\t\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t \t\t<button class="' + this.settings.classNames.previousButton.substr(1) + '" aria-label="previous">\n\t\t\t\t\t\t\t\t <svg fill="#000000" height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">\n\t\t\t\t\t\t\t\t\t\t<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>\n\t\t\t\t\t\t\t\t\t\t<path d="M0 0h24v24H0z" fill="none"/>\n\t\t\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t \t\t<button class="' + this.settings.classNames.nextButton.substr(1) + '" aria-label="next">\n\t\t\t\t\t\t\t\t\t<svg fill="#000000" height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">\n\t\t\t\t\t\t\t\t\t\t<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>\n\t\t\t\t\t\t\t\t\t\t<path d="M0 0h24v24H0z" fill="none"/>\n\t\t\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t\t\t </button>';
 
     this.panel.innerHTML = '' + this.panel.innerHTML + buttonsTemplate;
 
     CONSTANTS.EVENTS.forEach(function (ev) {
-      _this3.panel.querySelector(_this3.settings.classNames.closeButton).addEventListener(ev, function (e) {
+      _this4.panel.querySelector(_this4.settings.classNames.closeButton).addEventListener(ev, function (e) {
         if (e.keyCode && !~CONSTANTS.KEYCODES.indexOf(e.keyCode)) return;
-        _this3.close.call(_this3);
+        _this4.close.call(_this4);
       });
-      _this3.panel.querySelector(_this3.settings.classNames.previousButton).addEventListener(ev, function (e) {
+      _this4.panel.querySelector(_this4.settings.classNames.previousButton).addEventListener(ev, function (e) {
         if (e.keyCode && !~CONSTANTS.KEYCODES.indexOf(e.keyCode)) return;
-        _this3.throttledPrevious.call(_this3);
+        _this4.throttledPrevious.call(_this4);
       });
-      _this3.panel.querySelector(_this3.settings.classNames.nextButton).addEventListener(ev, function (e) {
+      _this4.panel.querySelector(_this4.settings.classNames.nextButton).addEventListener(ev, function (e) {
         if (e.keyCode && !~CONSTANTS.KEYCODES.indexOf(e.keyCode)) return;
-        _this3.throttledNext.call(_this3);
+        _this4.throttledNext.call(_this4);
       });
     });
   },
   initItems: function initItems() {
-    var _this4 = this;
+    var _this5 = this;
 
     var items = [].slice.call(this.node.querySelectorAll(this.settings.classNames.item));
 
@@ -626,24 +633,24 @@ var StormWall = {
     this.items = items.map(function (item) {
       return {
         node: item,
-        content: item.querySelector(_this4.settings.classNames.content),
-        trigger: item.querySelector(_this4.settings.classNames.trigger)
+        content: item.querySelector(_this5.settings.classNames.content),
+        trigger: item.querySelector(_this5.settings.classNames.trigger)
       };
     });
   },
   change: function change(i) {
-    var _this5 = this;
+    var _this6 = this;
 
     if (this.openIndex === false) return this.open(i);
     if (this.openIndex === i) return this.close();
     if (this.items[this.openIndex].node.offsetTop === this.items[i].node.offsetTop) this.close(function () {
-      return _this5.open(i, _this5.panel.offsetHeight);
+      return _this6.open(i, _this6.panel.offsetHeight);
     }, this.panel.offsetHeight);else this.close(function () {
-      return _this5.open(i);
+      return _this6.open(i);
     });
   },
   open: function open(i, start, speed) {
-    var _this6 = this;
+    var _this7 = this;
 
     this.panelSourceContainer = this.items[i].content;
     this.openIndex = i;
@@ -661,19 +668,22 @@ var StormWall = {
         duration = speed || 16,
         animateOpen = function animateOpen() {
       currentTime++;
-      _this6.panel.style.height = easeInOutQuad(currentTime, panelStart, totalPanelChange, duration) + 'px';
-      _this6.resizeRow(_this6.items[_this6.openIndex].node, easeInOutQuad(currentTime, rowStart, totalRowChange, duration) + 'px');
-      if (currentTime < duration) window.requestAnimationFrame(animateOpen.bind(_this6));else {
-        _this6.panel.style.height = 'auto';
-        _this6.items[i].node.parentNode.insertBefore(_this6.panel, _this6.items[i].node.nextElementSibling);
-        if (!inView(_this6.panel, function () {
+      _this7.panel.style.height = easeInOutQuad(currentTime, panelStart, totalPanelChange, duration) + 'px';
+      _this7.resizeRow(_this7.items[_this7.openIndex].node, easeInOutQuad(currentTime, rowStart, totalRowChange, duration) + 'px');
+      if (currentTime < duration) window.requestAnimationFrame(animateOpen.bind(_this7));else {
+        _this7.panel.style.height = 'auto';
+        _this7.items[i].node.parentNode.insertBefore(_this7.panel, _this7.items[i].node.nextElementSibling);
+
+        !!window.history && !!window.history.pushState && window.history.pushState({ URL: '#' + _this7.items[i].trigger.getAttribute('id') }, '', '#' + _this7.items[i].trigger.getAttribute('id'));
+
+        if (!inView(_this7.panel, function () {
           return {
             l: 0,
             t: 0,
-            b: (window.innerHeight || document.documentElement.clientHeight) - _this6.panel.offsetHeight,
+            b: (window.innerHeight || document.documentElement.clientHeight) - _this7.panel.offsetHeight,
             r: window.innerWidth || document.documentElement.clientWidth
           };
-        })) scrollTo(_this6.panel.offsetTop - 120);
+        })) scrollTo(_this7.panel.offsetTop - 120);
       }
     };
 
@@ -687,7 +697,7 @@ var StormWall = {
     return this;
   },
   close: function close(cb, end, speed) {
-    var _this7 = this;
+    var _this8 = this;
 
     var endPoint = end || 0,
         currentTime = 0,
@@ -698,17 +708,17 @@ var StormWall = {
         duration = speed || 16,
         animateClosed = function animateClosed() {
       currentTime++;
-      _this7.panel.style.height = easeInOutQuad(currentTime, panelStart, totalPanelChange, duration) + 'px';
-      _this7.resizeRow(_this7.items[_this7.openIndex].node, easeInOutQuad(currentTime, rowStart, totalRowChange, duration) + 'px');
-      if (currentTime < duration) window.requestAnimationFrame(animateClosed.bind(_this7));else {
-        if (!endPoint) _this7.panel.style.height = 'auto';
-        _this7.panelInner.removeChild(_this7.panelContent);
-        _this7.panel.setAttribute('aria-hidden', true);
-        _this7.items[_this7.openIndex].trigger.setAttribute('aria-expanded', false);
-        _this7.panelSourceContainer.appendChild(_this7.panelContent);
-        _this7.node.classList.remove(_this7.settings.classNames.animating.substr(1));
-        _this7.node.classList.remove(_this7.settings.classNames.open.substr(1));
-        _this7.openIndex = false;
+      _this8.panel.style.height = easeInOutQuad(currentTime, panelStart, totalPanelChange, duration) + 'px';
+      _this8.resizeRow(_this8.items[_this8.openIndex].node, easeInOutQuad(currentTime, rowStart, totalRowChange, duration) + 'px');
+      if (currentTime < duration) window.requestAnimationFrame(animateClosed.bind(_this8));else {
+        if (!endPoint) _this8.panel.style.height = 'auto';
+        _this8.panelInner.removeChild(_this8.panelContent);
+        _this8.panel.setAttribute('aria-hidden', true);
+        _this8.items[_this8.openIndex].trigger.setAttribute('aria-expanded', false);
+        _this8.panelSourceContainer.appendChild(_this8.panelContent);
+        _this8.node.classList.remove(_this8.settings.classNames.animating.substr(1));
+        _this8.node.classList.remove(_this8.settings.classNames.open.substr(1));
+        _this8.openIndex = false;
         typeof cb === 'function' && cb();
       }
     };
@@ -724,21 +734,21 @@ var StormWall = {
     return this.change(this.openIndex + 1 === this.items.length ? 0 : this.openIndex + 1);
   },
   equalHeight: function equalHeight(cb) {
-    var _this8 = this;
+    var _this9 = this;
 
     var openHeight = 0,
         closedHeight = 0;
 
     this.items.map(function (item, i) {
       item.node.style.height = 'auto';
-      if (_this8.openIndex !== false && item.node.offsetTop === _this8.items[_this8.openIndex].node.offsetTop) {
-        if (_this8.openIndex === i) openHeight = item.node.offsetHeight + _this8.panel.offsetHeight;
+      if (_this9.openIndex !== false && item.node.offsetTop === _this9.items[_this9.openIndex].node.offsetTop) {
+        if (_this9.openIndex === i) openHeight = item.node.offsetHeight + _this9.panel.offsetHeight;
       } else {
         if (item.node.offsetHeight > closedHeight) closedHeight = item.node.offsetHeight;
       }
       return item;
     }).map(function (item, i) {
-      if (_this8.openIndex !== i) item.node.style.height = closedHeight + 'px';
+      if (_this9.openIndex !== i) item.node.style.height = closedHeight + 'px';
     });
 
     this.openHeight = openHeight;
