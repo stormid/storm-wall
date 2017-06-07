@@ -1,5 +1,5 @@
 import should from 'should';
-import Wall from '../dist/storm-wall';
+import Wall from '../dist/storm-wall.standalone';
 import 'jsdom-global/register';
 
 const html = `<ul class="js-wall">
