@@ -85,10 +85,10 @@ gulp.task('js:es5', function() {
 });
 
 gulp.task('js:es5-rollup', function() {
-	return gulp.src('src/storm-wall.js')
+	return gulp.src('src/' + pkg.name + '.js')
         .pipe(rollup({
 			allowRealFiles: true,
-            entry: 'src/storm-wall.js',
+            entry: 'src/' + pkg.name + '.js',
 			format: 'es',
 			plugins: [
 				rollupNodeResolve(),
@@ -103,15 +103,12 @@ gulp.task('js:es5-rollup', function() {
             template: umdTemplate
         }))
         .pipe(header(banner, {pkg : pkg}))
-  		.pipe(rename({
-            basename: pkg.name,
-            suffix: '.standalone'
-        }))
+  		.pipe(rename({suffix: '.standalone'}))
 		.pipe(gulp.dest('dist/'));
 });
 
 gulp.task('js:es6', function() {
-    return gulp.src('src/*.js')
+    return gulp.src('src/**/*.js')
         .pipe(plumber({errorHandler: onError}))
         .pipe(header(banner, {pkg : pkg}))
 		.pipe(gulp.dest('dist/'));
