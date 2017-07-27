@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 1.1.1: Thu, 08 Jun 2017 10:09:27 GMT
+ * @version 1.1.2: Thu, 27 Jul 2017 16:11:14 GMT
  * @author stormid
  * @license MIT
  */
@@ -662,7 +662,7 @@ var StormWall = {
 
     var currentTime = 0,
         panelStart = start || 0,
-        totalPanelChange = this.panelInner.offsetHeight - panelStart,
+        totalPanelChange = this.panel.offsetHeight - panelStart,
         rowStart = this.closedHeight + panelStart,
         totalRowChange = totalPanelChange,
         duration = speed || 16,

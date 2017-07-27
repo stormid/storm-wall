@@ -162,7 +162,7 @@ const StormWall = {
 
 		let currentTime = 0,
 			panelStart = start || 0,
-			totalPanelChange = this.panelInner.offsetHeight - panelStart,
+			totalPanelChange = this.panel.offsetHeight - panelStart,
 			rowStart = this.closedHeight + panelStart,
 			totalRowChange = totalPanelChange,
 			duration = speed || 16,
