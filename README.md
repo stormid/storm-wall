@@ -4,7 +4,7 @@
 [![codecov.io](http://codecov.io/github/mjbp/storm-wall/coverage.svg?branch=master)](http://codecov.io/github/mjbp/storm-wall?branch=master)
 [![npm version](https://badge.fury.io/js/storm-wall.svg)](https://badge.fury.io/js/storm-wall)
 
-Interactive animating content wall, loosely based on the Google image search results animating content panels. Use with caution, not to be used okn devices that cannot handle heavy UI repainting.
+Interactive animating content wall, loosely based on the Google image search results animating content panels. Use with caution, not to be used on devices that cannot handle heavy UI repainting.
     
 ## Example
 [https://mjbp.github.io/storm-wall](https://mjbp.github.io/storm-wall)
