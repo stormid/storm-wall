@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 1.1.2: Thu, 27 Jul 2017 16:11:14 GMT
+ * @version 1.1.5: Fri, 16 Feb 2018 10:53:46 GMT
  * @author stormid
  * @license MIT
  */
@@ -520,7 +520,8 @@ var defaults = {
     closeButton: '.js-wall-close',
     nextButton: '.js-wall-next',
     previousButton: '.js-wall-previous'
-  }
+  },
+  offset: 120
 };
 
 var CONSTANTS = {
@@ -683,7 +684,7 @@ var StormWall = {
             b: (window.innerHeight || document.documentElement.clientHeight) - _this7.panel.offsetHeight,
             r: window.innerWidth || document.documentElement.clientWidth
           };
-        })) scrollTo(_this7.panel.offsetTop - 120);
+        })) scrollTo(_this7.panel.offsetTop - _this7.settings.offset);
       }
     };
 
