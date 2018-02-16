@@ -1,41 +1,16 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 1.1.5: Fri, 16 Feb 2018 10:53:46 GMT
+ * @version 1.1.5: Fri, 16 Feb 2018 13:12:13 GMT
  * @author stormid
  * @license MIT
  */
-import throttle from 'lodash.throttle';
+import throttle from 'raf-throttle';
 
 import scrollTo from './libs/scrollTo';
 import inView from './libs/inView';
 import easeInOutQuad from './libs/easeInOutQuad';
-
-const defaults = {
-	classNames: {
-		ready: '.js-wall--is-ready',
-		trigger: '.js-wall-trigger',
-		item: '.js-wall-item',
-		content: '.js-wall-child',
-		panel: '.js-wall-panel',
-		panelInner: '.js-wall-panel-inner',
-		open: '.js-wall--is-open',
-		animating: '.js-wall--is-animating',
-		closeButton: '.js-wall-close',
-		nextButton: '.js-wall-next',
-		previousButton: '.js-wall-previous'
-	},
-	offset: 120
-};
-
-const CONSTANTS = {
-	ERRORS: {
-		ROOT: 'Wall cannot be initialised, no trigger elements found',
-		ITEM: 'Wall item cannot be found',
-		TRIGGER: 'Wall trigger cannot be found'
-	},
-	KEYCODES: [13, 32],
-	EVENTS: ['click', 'keydown']
-};
+import { defaults } from './defaults';
+import { CONSTANTS } from './constants';
 
 const StormWall = {
 	init(){
@@ -62,11 +37,11 @@ const StormWall = {
 	initThrottled(){
 		this.throttledResize = throttle(() => {
 			this.equalHeight(this.setPanelTop.bind(this));
-		}, 60);
+		});
 
-		this.throttledChange = throttle(this.change, 100);
-		this.throttledPrevious = throttle(this.previous, 100);
-		this.throttledNext = throttle(this.next, 100);
+		this.throttledChange = throttle(this.change);
+		this.throttledPrevious = throttle(this.previous);
+		this.throttledNext = throttle(this.next);
 	},
 	initTriggers(){
 		this.items.forEach((item, i) => {

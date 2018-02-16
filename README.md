@@ -195,6 +195,7 @@ Sample minimum CSS required
 ```
 {
     ready: '.js-wall--is-ready', //selector added when wall has loaded and is ready to use
+    offset: 120, //the window offset that the browser scrolls to after an item is opened
     trigger: '.js-wall-trigger', //selector for each wall item trigger button
     item: '.js-wall-item', //selector for each wall item
     content: '.js-wall-child', //selector for each wall item content
