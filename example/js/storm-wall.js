@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 1.1.2: Thu, 27 Jul 2017 16:11:13 GMT
+ * @version 1.1.5: Fri, 16 Feb 2018 10:53:46 GMT
  * @author stormid
  * @license MIT
  */
@@ -23,7 +23,8 @@ const defaults = {
 		closeButton: '.js-wall-close',
 		nextButton: '.js-wall-next',
 		previousButton: '.js-wall-previous'
-	}
+	},
+	offset: 120
 };
 
 const CONSTANTS = {
@@ -48,7 +49,7 @@ const StormWall = {
 
 		window.addEventListener('resize', this.throttledResize.bind(this));
 		setTimeout(this.equalHeight.bind(this), 100);
-		
+
 		this.node.classList.add(this.settings.classNames.ready.substr(1));
 
 		setTimeout(() => {
@@ -93,7 +94,7 @@ const StormWall = {
 				return el;
 			},
 			panelElement = elementFactory(this.items[0].node.tagName.toLowerCase(), this.settings.classNames.panel.substr(1), { 'aria-hidden': true });
-		
+
 		this.panelInner = elementFactory('div', this.settings.classNames.panelInner.substr(1));
 		this.panel = this.node.appendChild(panelElement);
 
@@ -121,7 +122,7 @@ const StormWall = {
 								 </button>`;
 
 		this.panel.innerHTML = `${this.panel.innerHTML}${buttonsTemplate}`;
-			
+
 		CONSTANTS.EVENTS.forEach(ev => {
 			this.panel.querySelector(this.settings.classNames.closeButton).addEventListener(ev, e => {
 				if(e.keyCode && !~CONSTANTS.KEYCODES.indexOf(e.keyCode)) return;
@@ -190,7 +191,7 @@ const StormWall = {
 							b: (window.innerHeight || document.documentElement.clientHeight) - this.panel.offsetHeight,
 							r: (window.innerWidth || document.documentElement.clientWidth)
 						};
-					})) scrollTo(this.panel.offsetTop - 120);
+					})) scrollTo(this.panel.offsetTop - this.settings.offset);
 				}
 			};
 
@@ -228,7 +229,7 @@ const StormWall = {
 					typeof cb === 'function' && cb();
 				}
 			};
-		
+
 		this.node.classList.add(this.settings.classNames.animating.substr(1));
 
 		animateClosed.call(this);
@@ -276,9 +277,9 @@ const StormWall = {
 
 const init = (sel, opts) => {
 	let els = [].slice.call(document.querySelectorAll(sel));
-	
+
 	if(els.length === 0) throw new Error(CONSTANTS.ERRORS.ROOT);
-	
+
 	return els.map(el => {
 		return Object.assign(Object.create(StormWall), {
 			node: el,
@@ -286,5 +287,5 @@ const init = (sel, opts) => {
 		}).init();
 	});
 };
-	
+
 export default { init };
