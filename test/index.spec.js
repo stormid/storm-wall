@@ -1,6 +1,29 @@
 import should from 'should';
-import Wall from '../dist/storm-wall';
+import Wall from '../dist/storm-wall.standalone';
 import 'jsdom-global/register';
+
+var lastTime = 0;
+var vendors = ['ms', 'moz', 'webkit', 'o'];
+for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+	window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+	window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+								|| window[vendors[x]+'CancelRequestAnimationFrame'];
+}
+
+if (!window.requestAnimationFrame)
+	window.requestAnimationFrame = function(callback, element) {
+		var currTime = new Date().getTime();
+		var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+		var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+			timeToCall);
+		lastTime = currTime + timeToCall;
+		return id;
+	};
+
+if (!window.cancelAnimationFrame)
+	window.cancelAnimationFrame = function(id) {
+		clearTimeout(id);
+	};
 
 const html = `<ul class="js-wall">
             <li class="js-wall-item">
@@ -23,7 +46,6 @@ const html = `<ul class="js-wall">
 
 document.body.innerHTML = html;
 
-
 let WallItem = Wall.init('.js-wall');
 
 
@@ -39,18 +61,25 @@ describe('Initialisation', () => {
 	});
 
 	//To do - testable assertions
+	//Shoud be re-written for async
 	it('should attach the handleClick eventListener to DOMElement click event to toggle documentElement aria', () => {
 		WallItem[0].items[0].trigger.click();
-		should(WallItem[0].items[0].trigger.getAttribute('aria-expanded')).equal('true');
-		
-		//WallItem[0].items[1].trigger.click();
 		document.querySelector(WallItem[0].settings.classNames.nextButton).click();
-		//should(WallItem[0].items[0].trigger.getAttribute('aria-expanded')).equal('false');
 		document.querySelector(WallItem[0].settings.classNames.previousButton).click();
 		document.querySelector(WallItem[0].settings.classNames.closeButton).click();
-		//should(WallItem[0].items[0].trigger.getAttribute('aria-expanded')).equal('true');
+		window.setTimeout(() => { 
+			
+			should(WallItem[0].items[0].trigger.getAttribute('aria-expanded')).equal('true');
+			
+			WallItem[0].items[1].trigger.click();
+			document.querySelector(WallItem[0].settings.classNames.nextButton).click();
+			document.querySelector(WallItem[0].settings.classNames.previousButton).click();
+			document.querySelector(WallItem[0].settings.classNames.closeButton).click();
+		
+		}, 0);
 	});
 });
+
 
 //To do - testable assertions
 describe('Keyboard interaction', () => {
@@ -64,6 +93,7 @@ describe('Keyboard interaction', () => {
 				keyCode: 33
 			})
 		);
+		should(WallItem[0].items[0].trigger.getAttribute('aria-expanded')).equal('false');
 
 		//trigger
 		WallItem[0].items[0].trigger.dispatchEvent(
@@ -72,6 +102,26 @@ describe('Keyboard interaction', () => {
 				keyCode: 32
 			})
 		);
+		window.setTimeout(() => { 
+			should(WallItem[0].items[0].trigger.getAttribute('aria-expanded')).equal('true');
+		}, 0);
 		
 	});
+});
+
+describe('API', () => {
+
+	it('should open a panel when change is invoked', () => {
+		WallItem[0].openIndex = false;
+		WallItem[0].change[3];
+		window.setTimeout(() => { 
+			should(WallItem[0].items[3].trigger.getAttribute('aria-expanded')).equal('true');
+		}, 0);
+		WallItem[0].change[3];
+
+		//Multiple nested async events are not testable using this method...
+		WallItem[0].previous();
+		WallItem[0].next();
+	});
+	
 });

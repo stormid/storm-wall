@@ -73,7 +73,7 @@ gulp.task('js:es5', function() {
     return gulp.src('src/*.js')
         .pipe(plumber({errorHandler: onError}))
         .pipe(babel({
-			presets: ['es2015']
+			presets: ['env']
 		}))
         .pipe(wrap({
             namespace: componentName(),
@@ -88,15 +88,17 @@ gulp.task('js:es5-rollup', function() {
 	return gulp.src('src/' + pkg.name + '.js')
         .pipe(rollup({
 			allowRealFiles: true,
-            entry: 'src/' + pkg.name + '.js',
-			format: 'es',
+            input: 'src/' + pkg.name + '.js',
+			output: {
+                format: 'es'
+            },
 			plugins: [
 				rollupNodeResolve(),
                 commonjs()
 			]
         }))
         .pipe(babel({
-			presets: ['es2015']
+			presets: ['env']
 		}))
         .pipe(wrap({
             namespace: componentName(),
@@ -108,7 +110,7 @@ gulp.task('js:es5-rollup', function() {
 });
 
 gulp.task('js:es6', function() {
-    return gulp.src('src/*.js')
+    return gulp.src('src/**/*.js')
         .pipe(plumber({errorHandler: onError}))
         .pipe(header(banner, {pkg : pkg}))
 		.pipe(gulp.dest('dist/'));
@@ -126,7 +128,7 @@ gulp.task('example:import', function(){
             entries: './example/src/app.js',
             debug: true
         })
-        .transform(babelify, {presets: ['es2015']})
+        .transform(babelify, {presets: ['env']})
         .bundle()
         .pipe(source('app.js'))
         .pipe(buffer())

@@ -1,34 +1,10 @@
-import throttle from 'lodash.throttle';
+import throttle from 'raf-throttle';
 
 import scrollTo from './libs/scrollTo';
 import inView from './libs/inView';
 import easeInOutQuad from './libs/easeInOutQuad';
-
-const defaults = {
-	classNames: {
-		ready: '.js-wall--is-ready',
-		trigger: '.js-wall-trigger',
-		item: '.js-wall-item',
-		content: '.js-wall-child',
-		panel: '.js-wall-panel',
-		panelInner: '.js-wall-panel-inner',
-		open: '.js-wall--is-open',
-		animating: '.js-wall--is-animating',
-		closeButton: '.js-wall-close',
-		nextButton: '.js-wall-next',
-		previousButton: '.js-wall-previous'
-	}
-};
-
-const CONSTANTS = {
-	ERRORS: {
-		ROOT: 'Wall cannot be initialised, no trigger elements found',
-		ITEM: 'Wall item cannot be found',
-		TRIGGER: 'Wall trigger cannot be found'
-	},
-	KEYCODES: [13, 32],
-	EVENTS: ['click', 'keydown']
-};
+import { defaults } from './defaults';
+import { CONSTANTS } from './constants';
 
 const StormWall = {
 	init(){
@@ -42,18 +18,24 @@ const StormWall = {
 
 		window.addEventListener('resize', this.throttledResize.bind(this));
 		setTimeout(this.equalHeight.bind(this), 100);
-		
+
 		this.node.classList.add(this.settings.classNames.ready.substr(1));
+
+		setTimeout(() => {
+			if(!!window.location.hash && !!~document.getElementById(window.location.hash.slice(1)).className.indexOf(this.settings.classNames.trigger.substr(1))) document.getElementById(window.location.hash.slice(1)).click();
+		}, 260);
+
+
 		return this;
 	},
 	initThrottled(){
 		this.throttledResize = throttle(() => {
 			this.equalHeight(this.setPanelTop.bind(this));
-		}, 60);
+		});
 
-		this.throttledChange = throttle(this.change, 100);
-		this.throttledPrevious = throttle(this.previous, 100);
-		this.throttledNext = throttle(this.next, 100);
+		this.throttledChange = throttle(this.change);
+		this.throttledPrevious = throttle(this.previous);
+		this.throttledNext = throttle(this.next);
 	},
 	initTriggers(){
 		this.items.forEach((item, i) => {
@@ -81,7 +63,7 @@ const StormWall = {
 				return el;
 			},
 			panelElement = elementFactory(this.items[0].node.tagName.toLowerCase(), this.settings.classNames.panel.substr(1), { 'aria-hidden': true });
-		
+
 		this.panelInner = elementFactory('div', this.settings.classNames.panelInner.substr(1));
 		this.panel = this.node.appendChild(panelElement);
 
@@ -109,7 +91,7 @@ const StormWall = {
 								 </button>`;
 
 		this.panel.innerHTML = `${this.panel.innerHTML}${buttonsTemplate}`;
-			
+
 		CONSTANTS.EVENTS.forEach(ev => {
 			this.panel.querySelector(this.settings.classNames.closeButton).addEventListener(ev, e => {
 				if(e.keyCode && !~CONSTANTS.KEYCODES.indexOf(e.keyCode)) return;
@@ -156,7 +138,7 @@ const StormWall = {
 
 		let currentTime = 0,
 			panelStart = start || 0,
-			totalPanelChange = this.panelInner.offsetHeight - panelStart,
+			totalPanelChange = this.panel.offsetHeight - panelStart,
 			rowStart = this.closedHeight + panelStart,
 			totalRowChange = totalPanelChange,
 			duration = speed || 16,
@@ -168,6 +150,9 @@ const StormWall = {
 				else {
 					this.panel.style.height = 'auto';
 					this.items[i].node.parentNode.insertBefore(this.panel, this.items[i].node.nextElementSibling);
+
+					(!!window.history && !!window.history.pushState) && window.history.pushState({ URL: `#${this.items[i].trigger.getAttribute('id')}`}, '', `#${this.items[i].trigger.getAttribute('id')}`);
+
 					if (!inView(this.panel, () => {
 						return {
 							l: 0,
@@ -175,7 +160,7 @@ const StormWall = {
 							b: (window.innerHeight || document.documentElement.clientHeight) - this.panel.offsetHeight,
 							r: (window.innerWidth || document.documentElement.clientWidth)
 						};
-					})) scrollTo(this.panel.offsetTop - 120);
+					})) scrollTo(this.panel.offsetTop - this.settings.offset);
 				}
 			};
 
@@ -213,7 +198,7 @@ const StormWall = {
 					typeof cb === 'function' && cb();
 				}
 			};
-		
+
 		this.node.classList.add(this.settings.classNames.animating.substr(1));
 
 		animateClosed.call(this);
@@ -261,9 +246,9 @@ const StormWall = {
 
 const init = (sel, opts) => {
 	let els = [].slice.call(document.querySelectorAll(sel));
-	
+
 	if(els.length === 0) throw new Error(CONSTANTS.ERRORS.ROOT);
-	
+
 	return els.map(el => {
 		return Object.assign(Object.create(StormWall), {
 			node: el,
@@ -271,5 +256,5 @@ const init = (sel, opts) => {
 		}).init();
 	});
 };
-	
+
 export default { init };
