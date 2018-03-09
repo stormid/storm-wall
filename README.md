@@ -1,13 +1,11 @@
 # Storm Wall
 
-[![Build Status](https://travis-ci.org/mjbp/storm-wall.svg?branch=master)](https://travis-ci.org/mjbp/storm-wall)
-[![codecov.io](http://codecov.io/github/mjbp/storm-wall/coverage.svg?branch=master)](http://codecov.io/github/mjbp/storm-wall?branch=master)
 [![npm version](https://badge.fury.io/js/storm-wall.svg)](https://badge.fury.io/js/storm-wall)
 
 Interactive animating content wall, loosely based on the Google image search results animating content panels. Use with caution, not to be used on devices that cannot handle heavy UI repainting.
     
 ## Example
-[https://mjbp.github.io/storm-wall](https://mjbp.github.io/storm-wall)
+[https://stormid.github.io/storm-wall](https://stormid.github.io/storm-wall)
 
 ## Usage
 HTML
@@ -217,12 +215,12 @@ npm run test
 ## Browser support
 This is module has both es6 and es5 distributions. The es6 version should be used in a workflow that transpiles.
 
-The es5 version depends upon window.requestAnimationFrame, Object.assign, element.classList, and Promises so all evergreen browsers are supported out of the box, ie9+ is supported with polyfills. ie8+ will work with even more polyfils for Array functions and eventListeners.
+The es5 version depends upon window.requestAnimationFrame and Object.assign so all evergreen browsers are supported out of the box, ie9+ is supported with polyfills. ie8+ will work with even more polyfils for Array functions and eventListeners.
 
 ## Dependencies
 None external.
 
-Imports lodash.throttle.
+Imports raf-throttle
 
 ## License
 MIT

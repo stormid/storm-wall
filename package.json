@@ -6,10 +6,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mjbp/storm-wall.git"
+    "url": "https://github.com/stormid/storm-wall.git"
   },
   "bugs": {
-    "url": "https://github.com/mjbp/storm-wall/issues"
+    "url": "https://github.com/stormid/storm-wall/issues"
   },
   "main": "dist/storm-wall.js",
   "keywords": [
@@ -21,8 +21,9 @@
   "scripts": {
     "build": "gulp build",
     "start": "gulp",
-    "test": "istanbul cover _mocha -- -R spec && codecov",
-    "test:watch": "NODE_ENV=test mocha --watch"
+    "test": "_mocha",
+    "test:watch": "NODE_ENV=test mocha --watch",
+    "test:coverage": "istanbul cover _mocha -- -R spec && codecov"
   },
   "browserify": {
     "transform": [
