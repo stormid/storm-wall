@@ -1,6 +1,6 @@
 {
   "name": "storm-wall",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Interactive animating content wall",
   "author": "stormid",
   "license": "MIT",
@@ -24,18 +24,6 @@
     "test": "_mocha",
     "test:watch": "NODE_ENV=test mocha --watch",
     "test:coverage": "istanbul cover _mocha -- -R spec && codecov"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "env"
-          ]
-        }
-      ]
-    ]
   },
   "browserify": {
     "transform": [
