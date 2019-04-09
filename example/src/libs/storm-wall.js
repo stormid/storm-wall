@@ -195,7 +195,8 @@ const StormWall = {
 					this.node.classList.remove(this.settings.classNames.animating.substr(1));
 					this.node.classList.remove(this.settings.classNames.open.substr(1));
 					this.openIndex = false;
-					typeof cb === 'function' && cb();
+					if(typeof cb === 'function') cb();
+					else (!!window.history && !!window.history.pushState) && history.pushState('', document.title, window.location.pathname + window.location.search);
 				}
 			};
 

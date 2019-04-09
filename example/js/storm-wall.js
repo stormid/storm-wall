@@ -1,6 +1,6 @@
 /**
  * @name storm-wall: Interactive animating content wall
- * @version 1.2.3: Fri, 08 Jun 2018 16:17:49 GMT
+ * @version 1.2.4: Tue, 09 Apr 2019 08:27:53 GMT
  * @author stormid
  * @license MIT
  */
@@ -201,7 +201,8 @@ const StormWall = {
 					this.node.classList.remove(this.settings.classNames.animating.substr(1));
 					this.node.classList.remove(this.settings.classNames.open.substr(1));
 					this.openIndex = false;
-					typeof cb === 'function' && cb();
+					if(typeof cb === 'function') cb();
+					else (!!window.history && !!window.history.pushState) && history.pushState('', document.title, window.location.pathname + window.location.search);
 				}
 			};
 
